@@ -38,12 +38,12 @@ namespace ToDoApi.Tests
         {
             // Arrange
             var data = GetToDoSamplesList();
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             _repo.GetAllToDos().Returns(data);
 
             // Act
-            var response = controller.GetAllToDos() as List<ToDo>;
+            var response = controller.Get() as List<ToDo>;
 
             // Assert
             Assert.NotNull(response);
@@ -54,10 +54,10 @@ namespace ToDoApi.Tests
         public void Get_Controller_GetAllToDos_Should_Call_Repo_GetAllToDos()
         {
             // Arrange
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             // Act
-            controller.GetAllToDos();
+            controller.Get();
 
             //Assert
             _repo.Received().GetAllToDos();
@@ -69,14 +69,14 @@ namespace ToDoApi.Tests
             // Arrange
             var data = GetToDoSamplesList();
             string id = "3";
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             _repo
                 .GetToDo(Arg.Any<string>())
                 .Returns(data.Single(t => t.Id == id));
 
             // Act
-            var result = controller.GetToDoById(id);
+            var result = controller.Get(id);
 
             // Assert
             Assert.AreEqual(data[2].Comment, result.Comment);
@@ -90,11 +90,11 @@ namespace ToDoApi.Tests
                 .GetToDo(Arg.Any<string>())
                 .Returns(new ToDo() { Task = "task" });
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
             string id = "3";
 
             // Act
-            controller.GetToDoById(id);
+            controller.Get(id);
 
             //Assert
             _repo.Received().GetToDo(id);
@@ -109,10 +109,10 @@ namespace ToDoApi.Tests
                 .Returns(t => null);
 
             // Act
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             // Assert
-            Assert.Throws<HttpResponseException>(() => controller.GetToDoById("1001"));
+            Assert.Throws<HttpResponseException>(() => controller.Get("1001"));
         }
 
         #endregion
@@ -129,11 +129,11 @@ namespace ToDoApi.Tests
                 .UpdateToDo(Arg.Any<string>(), Arg.Any<ToDo>())
                 .Returns(true);
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
             Setup_Controller_For_Tests(controller, HttpMethod.Put);
 
             // Act
-            controller.UpdateToDo("111", todo);
+            controller.Put("111", todo);
 
             // Assert
             _repo.Received().UpdateToDo("111", todo);
@@ -146,12 +146,12 @@ namespace ToDoApi.Tests
             _repo.UpdateToDo(Arg.Any<string>(), Arg.Any<ToDo>())
                 .Returns(false);
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             Setup_Controller_For_Tests(controller, HttpMethod.Post);
 
             // Act
-            var response = controller.UpdateToDo("1", new ToDo(){Task = "task"});
+            var response = controller.Put("1", new ToDo(){Task = "task"});
             
             // Assert
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -170,10 +170,10 @@ namespace ToDoApi.Tests
             _repo.DeleteToDo(Arg.Any<string>())
                 .Returns(true);
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             // Act
-            controller.DeleteToDo("123");
+            controller.Delete("123");
 
             // Assert
             _repo.Received().DeleteToDo(deletedId);
@@ -187,12 +187,12 @@ namespace ToDoApi.Tests
                 .DeleteToDo(Arg.Any<string>())
                 .Returns(true);
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             Setup_Controller_For_Tests(controller, HttpMethod.Delete);
 
             // Act
-            var result = controller.DeleteToDo("123");
+            var result = controller.Delete("123");
 
             // Assert
             Assert.IsInstanceOf<HttpResponseMessage>(result);
@@ -213,12 +213,12 @@ namespace ToDoApi.Tests
                 .AddToDo(Arg.Any<ToDo>())
                 .Returns(addedToDo);
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             Setup_Controller_For_Tests(controller, HttpMethod.Post);
 
             // Act
-            var response = controller.AddToDo(addedToDo);
+            var response = controller.Post(addedToDo);
 
             // Assert
             _repo.Received().AddToDo(addedToDo);
@@ -234,12 +234,12 @@ namespace ToDoApi.Tests
               .AddToDo(Arg.Any<ToDo>())
               .Returns(addedToDo);
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             Setup_Controller_For_Tests(controller, HttpMethod.Post);
 
             // Act
-            var response = controller.AddToDo(addedToDo);
+            var response = controller.Post(addedToDo);
 
             // Assert
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
@@ -258,12 +258,12 @@ namespace ToDoApi.Tests
                 .AddToDo(addedToDo)
                 .Returns(t => { throw new Exception(); });
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             Setup_Controller_For_Tests(controller, HttpMethod.Post);
 
             // Act
-            var response = controller.AddToDo(addedToDo);
+            var response = controller.Post(addedToDo);
 
             // Assert
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -279,15 +279,15 @@ namespace ToDoApi.Tests
               .AddToDo(Arg.Any<ToDo>())
               .Returns(addedToDo);
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             Setup_Controller_For_Tests(controller, HttpMethod.Post);
 
             // Act
-            var response = controller.AddToDo(addedToDo);
+            var response = controller.Post(addedToDo);
 
             // Assert
-            Assert.AreEqual("http://localhost/api/todos/1234", response.Headers.Location.ToString());
+            Assert.AreEqual("http://localhost/api/todo/1234", response.Headers.Location.ToString());
         }
 
         [Test]
@@ -300,12 +300,12 @@ namespace ToDoApi.Tests
               .AddToDo(Arg.Any<ToDo>())
               .Returns(addedToDo);
 
-            var controller = new ToDosController(_repo);
+            var controller = new ToDoController(_repo);
 
             Setup_Controller_For_Tests(controller, HttpMethod.Post);
 
             // Act
-            var response = controller.AddToDo(addedToDo);
+            var response = controller.Post(addedToDo);
 
             // Assert
             Assert.AreEqual(response.Content.Headers.ContentType.MediaType, "application/json");
@@ -316,13 +316,13 @@ namespace ToDoApi.Tests
         private static void Setup_Controller_For_Tests(ApiController controller, HttpMethod httpMethod)
         {
             var config = new HttpConfiguration();
-            //var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/todos");
-            var request = new HttpRequestMessage(httpMethod, "http://localhost/api/todos");
+            //var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/todo");
+            var request = new HttpRequestMessage(httpMethod, "http://localhost/api/todo");
             var route = config.Routes.MapHttpRoute(
                 "DefaultApi",
                 "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
-            var routeData = new HttpRouteData(route, new HttpRouteValueDictionary { { "controller", "todos" } });
+            var routeData = new HttpRouteData(route, new HttpRouteValueDictionary { { "controller", "todo" } });
 
             controller.ControllerContext = new HttpControllerContext(config, routeData, request);
             controller.Request = request;

@@ -18,23 +18,11 @@ namespace ToDoApi
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            //routes.MapRoute(
-            //    name: "Default",
-            //    url: "{controller}/{action}/{id}",
-            //    defaults: new { controller = "ToDos", action = "Get", id = UrlParameter.Optional }
-            //);
-
-            //routes.MapHttpRoute(
-            //    name: "DefaultApi",
-            //    routeTemplate:"api/Todos/{id}",
-            //    defaults: new { id = RouteParameter.Optional }
-            //    );
-
-//            routes.Routes.MapHttpRoute(
-//    name: "DefaultApi",
-//    routeTemplate: "api/{controller}/{id}",
-//    defaults: new { id = RouteParameter.Optional }
-//);
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+            );
 
         }
     }

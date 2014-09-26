@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,23 +12,23 @@ using ToDoApi.Repository;
 
 namespace ToDoApi.Controllers
 {
-    public class ToDosController : ApiController
+    public class ToDoController : ApiController
     {
         private readonly IToDoRepository _repo;
 
-        public ToDosController(IToDoRepository repo)
+        public ToDoController(IToDoRepository repo)
         {
             _repo = repo;
         }
 
-        // api/todos/
-        public IEnumerable<ToDo> GetAllToDos()
+        // api/todo/
+        public IEnumerable<ToDo> Get()
         {
             return _repo.GetAllToDos();
         }
 
-        // api/todos/1
-        public ToDo GetToDoById(string id)
+        // api/todo/1
+        public ToDo Get(string id)
         {
             var todo = _repo.GetToDo(id);
             if (todo == null)
@@ -37,19 +38,17 @@ namespace ToDoApi.Controllers
             return todo;
         }
 
-        // api/todos/
-        public HttpResponseMessage AddToDo(ToDo todo)
+        // api/todo/
+        public HttpResponseMessage Post(ToDo todo)
         {
             // Usage
             // http://stackoverflow.com/a/7173011
-            // curl "http://localhost:56103/api/todos" -H "Content-Type: application/json" {} --data @vehicleDescriptors.json
+            // curl "http://localhost:56103/api/todo" -H "Content-Type: application/json" {} --data @vehicleDescriptors.json
 
             // Model state errors
-            // $ curl -H "Content-Type: application/json" -d '{"tAask":"xyzTaskA","comment":"xyzCommentA","done":true}' http://localhost:56103/api/todos
+            // $ curl -H "Content-Type: application/json" -d '{"tAask":"xyzTaskA","comment":"xyzCommentA","done":true}' http://localhost:56103/api/todo
             // Good request
-            // $ curl -H "Content-Type: application/json" -d '{"task":"xyzTaskA","comment":"xyzCommentA","done":true}' http://localhost:56103/api/todos
-            // Good request to node hosted api
-            // $ curl -H "Content-Type: application/json" -d '{"task":"xyzTaskA","comment":"xyzCommentA","done":true}' http://localhost:8080/api/todos
+            // $ curl -H "Content-Type: application/json" -d '{"task":"xyzTaskA","comment":"xyzCommentA","done":true}' http://localhost:56103/api/todo
 
             if (!ModelState.IsValid)
             {
@@ -82,9 +81,10 @@ namespace ToDoApi.Controllers
             }
         }
 
-        // api/todos/1
-        public HttpResponseMessage UpdateToDo(string id, ToDo todo)
+        // api/todo/1
+        public HttpResponseMessage Put(string id, ToDo todo)
         {
+            // curl -X PUT -H "Content-Type: application/json" -d '{"task":"UPDATED_xyzTaskA","comment":"UPDATED_xyzCommentA","done":true}' http://localhost:56103/api/todo/54253688362aa435947edeb5
             try
             {
                 var result = _repo.UpdateToDo(id, todo);
@@ -113,11 +113,11 @@ namespace ToDoApi.Controllers
             }
         }
 
-        // api/todos/1
-        public HttpResponseMessage DeleteToDo(string id)
+        // api/todo/1
+        public HttpResponseMessage Delete(string id)
         {
             // Usage:
-            // curl -X DELETE http://localhost:56103/api/todos/540c0a559bcc7b4034000002
+            // curl -X DELETE http://localhost:56103/api/todo/540c0a559bcc7b4034000002
 
             try
             {

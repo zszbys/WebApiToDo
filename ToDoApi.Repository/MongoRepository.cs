@@ -12,12 +12,7 @@ namespace ToDoApi.Repository
 {
     public class MongoRepository : IToDoRepository
     {
-        readonly MongoCollection<ToDo> _todos;
-
-        //public MongoRepository()
-        //    : this("")
-        //{
-        //}
+        private readonly MongoCollection<ToDo> _todos;
 
         public MongoRepository(string connection)
         {

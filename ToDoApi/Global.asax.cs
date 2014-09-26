@@ -22,7 +22,8 @@ namespace ToDoApi
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             // DI
-            NinjectHttpContainer.RegisterModules(NinjectHttpModules.Modules);  
+            NinjectHttpContainer.RegisterModules(NinjectHttpModules.Modules);
+
         }
     }
 }

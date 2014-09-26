@@ -17,14 +17,9 @@ namespace ToDoApi
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            //config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
-
+            // return json only
             config.Formatters.Clear(); // remove the default xml formatter
             config.Formatters.Add(new JsonMediaTypeFormatter());
-
-            //var json = config.Formatters.JsonFormatter;
-            //json.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
-            //config.Formatters.Remove(config.Formatters.XmlFormatter);
         }
     }
 }
